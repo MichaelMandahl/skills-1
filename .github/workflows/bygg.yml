@@ -1,0 +1,23 @@
+name: bygg
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bygg:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kontrollera att SKILL.md-filerna finns och går att läsa
+        run: |
+          set -euo pipefail
+          antal=$(find . -name SKILL.md -not -path './.git/*' | wc -l)
+          echo "Hittade $antal SKILL.md-filer"
+          test "$antal" -gt 0
+          find . -name SKILL.md -not -path './.git/*' -print0 | xargs -0 -n1 test -r
